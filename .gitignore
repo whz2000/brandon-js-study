@@ -1,0 +1,10 @@
+node_modules/
+allure-results/
+cypress/videos/
+package-lock.json
+**/**/.DS_Store
+coverage/
+.nyc_output/
+cypress/downloads
+.husky/_/*
+.husky/.gitignore
