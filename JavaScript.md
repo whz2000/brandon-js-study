@@ -258,7 +258,7 @@ console.log('B'.charCodeAt(0)); // 输出: 66
 
 判断一个变量是否是数组使用 Array.isArray( )
 
-
+# Section 3. Operators
 
 ## 算数运算符
 
@@ -450,4 +450,73 @@ console.log('B'.charCodeAt(0)); // 输出: 66
 | ==       | equal to                 |
 | !=       | not equal to             |
 
-- 
+- object运算
+
+  当一个对象进行运算时，会先调用valueof方法，如果不存在则调用tostring方法，如果都不存在，则调用默认的tostring方法，在 JavaScript 中，所有的对象都继承自 `Object.prototype`，而 `Object.prototype.toString` 是一个内置方法。当你调用一个对象的 `toString` 方法时（无论是显式调用还是隐式调用），如果没有重写该方法，它会返回一个表示该对象类型的字符串，格式为 `[object Type]`，其中 `Type` 是对象的类型，它的类型是 `string`。
+
+- null 和 undefined
+
+  ```javascript
+  console.log(null == undefined); // true
+  ```
+
+- NaN
+
+  NaN和任何一个值对比的结果都是false，即使是他自己
+
+  NaN和任何一个值进行不等于运算结果都是true
+
+  ```
+  console.log(NaN == 1); // false
+  console.log(NaN == NaN); // false
+  
+  console.log(NaN != 1); // true
+  ```
+
+- === 和 !==
+
+  和==、!=功能上是相同的，唯一的区别是=== 和 !==在比较时不会自动进行类型的转换
+
+## 逻辑运算
+
+- ! (Logical NOT)
+
+  - If `a` is `undefined`, the result is `true`.
+  - If `a` is `null`, the result is `true`.
+  - If `a` is a number other than `0`, the result is `false`.
+  - If `a` is `NaN`, the result is `true`.
+  - If `a` is an [object](https://www.javascripttutorial.net/javascript-object/), the result is false.
+  - If `a` is an empty string, the result is `true`. If `a` is a non-empty string, the result is `false`
+
+  即，非空值取反为true，但是空对象取反仍为false
+
+- ！！
+
+  双重否定表肯定，结果和调用Boolean( )进行类型转换一致
+
+- || (Logical OR)
+
+  本质是返回第一个真值或最后一个假值，返回的是操作数的原始值
+
+- && (Logical AND)
+
+  本质是返回第一个假值或最后一个真值，返回的是操作数的原始值
+
+- 混合运算时的优先级
+
+  从高到低：
+
+  1. Logical NOT (!)
+  2. Logical AND (&&)
+  3. Logical OR (||)
+
+# Section 4. Control flow Statements
+
+## 
+
+# Section 9. Promises & Async/Await
+
+## promise
+
+
+

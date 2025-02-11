@@ -1,3 +1,1 @@
-let a = 10
-let b = a++
-console.log(b)
+console.log(false || 1 && 0)
