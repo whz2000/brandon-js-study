@@ -512,7 +512,52 @@ console.log('B'.charCodeAt(0)); // 输出: 66
 
 # Section 4. Control flow Statements
 
-## 
+## 三元运算符
+
+- if else的缩略版
+
+```javascript
+// 格式：condition ? expressionIfTrue : expressionIfFalse;
+
+let message;
+if (age >= 16) {
+  message = 'You can drive.';
+} else {
+  message = 'You cannot drive.';
+}
+
+age >= 16 ? (message = 'You can drive.') : (message = 'You cannot drive.');
+
+message = age >= 16 ? 'You can drive.' : 'You cannot drive.';
+```
+
+- 使用三元运算符执行多个操作，返回分隔符的最后一个值
+
+```javascript
+let authenticated = true;
+let nextURL = authenticated
+  ? (alert('You will redirect to admin area'), '/admin')
+  : (alert('Access denied'), '/403');
+
+// redirect to nextURL here
+console.log(nextURL); // '/admin'
+```
+
+## while和do while
+
+```JavaScript
+// while
+while (expression) {
+    // statement
+}
+
+//do while
+do {
+  statement;
+} while(expression);
+```
+
+区别：while是先判断后执行，do while是先执行后判断，所以do while最起码会执行一次循环体
 
 # Section 9. Promises & Async/Await
 
