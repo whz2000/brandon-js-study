@@ -1,11 +1,10 @@
-let count = 0;
-do {
-  console.log(count);
-  count++;
-} while (count < 5)
-
-let count1 = 0
-while (count1 < 5){
-  console.log(count1)
-  count1++
+function add(a,b) {
+  let sum = 0;
+  for (let i = 0; i < arguments.length; i++) {
+    sum += arguments[i];
+  }
+  return sum;
 }
+
+console.log(add(2, 8)); // 3
+console.log(add(2, 8, 3, 4, 5)); // 15

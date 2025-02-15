@@ -559,6 +559,141 @@ do {
 
 区别：while是先判断后执行，do while是先执行后判断，所以do while最起码会执行一次循环体
 
+## for循环
+
+```javascript
+for (initializer; condition; iterator) {
+    // statements
+}
+```
+
+执行顺序
+
+![JavaScript for loop](https://www.javascripttutorial.net/wp-content/uploads/2022/01/javascript-for-loop.svg)
+
+
+
+for 循环不包含循环体的例子
+
+```javascript
+let sum = 0;
+for (let i = 0; i <= 9; i++, sum += i);
+console.log(sum); // 55
+
+let sum = 0;
+for (let i = 0; i <= 9; i++) {
+  sum += i;
+}
+console.log(sum); // 45
+```
+
+执行顺序不一致
+
+- 第一段代码中，`sum += i` 是在 `i++` 之后执行的，因此 `sum` 累加的是 `i` 更新后的值。即在迭代内执行的相加操作
+- 第二段代码中，`sum += i` 是在 `i++` 之前执行的，因此 `sum` 累加的是 `i` 的当前值。即在循环体内执行的相加操作
+
+## break
+
+- 使用label语句来标记 `label: statement`
+
+  使用label来标记for循环
+
+  ```javascript
+  outer: for (let i = 0; i < 5; i++) {
+      console.log(i);
+  }
+  ```
+
+  一旦定义了标签，就可以在break或continue语句中来引用它 `break [label]`
+
+  使用场景：循环嵌套的时候，在内部循环内想要break外部循环
+
+  ```javascript
+  outer: for (let i = 1; i <= 3; i++) {
+    for (let j = 1; j <= 3; j++) {
+      if (i + j == 4) {
+        break outer;
+      }
+      console.log(i, j);
+    }
+  }
+  ```
+
+- 执行顺序 - 在for循环中使用break
+
+  ![JavaScript break - for loop](https://www.javascripttutorial.net/wp-content/uploads/2022/01/javascript-break-for-loop.svg)
+
+## continue
+
+- 执行顺序：在for循环中使用continue
+
+![JavaScript continue in a for loop](https://www.javascripttutorial.net/wp-content/uploads/2022/01/javascript-continue-for.svg)
+
+## 逗号操作符
+
+- 作用：接受两个表达式，从左到右对它们求值，然后返回右边表达式的值
+
+- 格式：`leftExpression, rightExpression`
+
+- 例子
+
+  ```javascript
+  let result = (10, 10 + 20);
+  console.log(result); //30
+  ```
+
+
+
+# Section 5. Functions
+
+## functions
+
+- 声明一个方法
+
+  ```JavaScript
+  function functionName(parameters) {
+      // function body
+      // ...
+  }
+  ```
+
+  - 方法的命名按照惯例使用驼峰命名法，并以动词开头，如 `getData()`
+  - 一个方法能够接受0，1，甚至多个参数，多个参数使用逗号，来分隔
+
+- 调用方法`functionName(arguments);`
+
+- 形参和实参（Parameters vs. Arguments）：定义函数的时候指定的参数为形参，而在实际调用函数的时候，所传入的与形参相对应的参数为实参
+
+- 返回值
+
+  - JavaScript中的每个函数都隐式返回 `undefined`，除非你显示地指定返回值
+  - 使用return语句来指定返回值 `return expression;`
+  - 当执行return语句后函数不再往下执行，因此可以使用不带值的return来提前结束函数
+  - 当需要返回多个值的时候，需要将这些值打包到一个数组或一个对象中
+
+- arguments对象
+
+  在函数内部，可以访问一个名为arguments的对象，该对象表示函数的命名参数。arguments对象的行为类似于数组，尽管它不是array类型的实例
+
+  ```JavaScript
+  function add() {
+    let sum = 0;
+    for (let i = 0; i < arguments.length; i++) {
+      sum += arguments[i];
+    }
+    return sum;
+  }
+  
+  console.log(add(1, 2)); // 3
+  console.log(add(1, 2, 3, 4, 5)); // 15
+  ```
+
+- 函数提升
+
+  函数提升是JavaScript引擎在执行函数声明之前将其物理移动到代码顶部的一种机制，因此可以在函数声明之前调用函数
+
+## 
+
 # Section 9. Promises & Async/Await
 
 ## promise
