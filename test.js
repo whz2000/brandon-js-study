@@ -1,10 +1,13 @@
-function add(a,b) {
-  let sum = 0;
-  for (let i = 0; i < arguments.length; i++) {
-    sum += arguments[i];
-  }
-  return sum;
-}
+// for (var i = 1; i <= 3; i++) {
+//   (function(i) {
+//     setTimeout(function() {
+//       console.log(i); // 输出: 1, 2, 3
+//     }, 1000);
+//   })(i);
+// }
 
-console.log(add(2, 8)); // 3
-console.log(add(2, 8, 3, 4, 5)); // 15
+for (var i = 1; i <= 3; i++) {
+  setTimeout(function() {
+    console.log(i);
+  }, 1000);
+}

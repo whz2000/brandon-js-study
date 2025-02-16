@@ -692,7 +692,118 @@ console.log(sum); // 45
 
   函数提升是JavaScript引擎在执行函数声明之前将其物理移动到代码顶部的一种机制，因此可以在函数声明之前调用函数
 
-## 
+## 函数与其他数据类型享有同等的地位
+
+- 将函数赋值给变量
+
+- 将函数作为参数传递给另一个函数
+
+  ```JavaScript
+  function add(a, b) {
+      return a + b;
+  }
+  
+  let sum = add;
+  
+  function average(a, b, fn) {
+      return fn(a, b) / 2;
+  }
+  
+  let result = average(10, 20, sum);
+  
+  console.log(result);
+  ```
+
+- 函数作为其他函数的返回值
+
+## 匿名函数
+
+匿名函数是指没有名称的函数。它通常在其他函数或表达式中定义，并作为值传递或直接调用。
+
+需要注意如果没有将匿名函数赋值给变量，那么需要用()来包裹它，否则会报错
+
+```javascript
+(function () {
+   //...
+});
+```
+
+- 特点
+
+  - **没有名称**：匿名函数没有标识符，无法通过名称直接调用。
+  - **作为值使用**：匿名函数可以赋值给变量、作为参数传递或作为返回值。
+  - **立即调用**：匿名函数可以定义后立即调用（IIFE，立即调用函数表达式）。
+
+- 用法
+
+  - 赋值给变量
+
+    ```JavaScript
+    let greet = function(name) {
+      console.log('Hello, ' + name);
+    };
+    
+    greet('John'); // 输出: Hello, John
+    ```
+
+  - 作为参数传递
+
+    ```javascript
+    setTimeout(function() {
+      console.log('Executed after 1 second');
+    }, 1000);
+    ```
+
+  - 作为返回值
+
+    ```javascript
+    function createCounter() {
+      return function() {
+        let count = 0;
+        return ++count;
+      };
+    }
+    
+    let counter = createCounter();
+    console.log(counter()); // 输出: 1
+    console.log(counter()); // 输出: 2
+    ```
+
+  - 立即调用函数表达式
+
+    匿名函数可以定义后立即调用，通常用于创建一个独立的作用域。
+
+    ```javascript
+    (function() {
+      console.log('IIFE executed');
+    })();
+    ```
+
+- 箭头函数
+
+  匿名函数的一种简洁写法
+
+  ```JavaScript
+  let add = (a, b) => a + b;
+  console.log(add(2, 3)); // 输出: 5
+  ```
+
+## 递归函数
+
+- 定义：在函数内部自己调用自己
+
+  ```JavaScript
+  function recurse() {
+      if(condition) {
+          // stop calling itself
+          //...
+      } else {
+          recurse();
+      }
+  }
+  ```
+
+- 
 
 # Section 9. Promises & Async/Await
 
