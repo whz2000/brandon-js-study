@@ -803,7 +803,50 @@ console.log(sum); // 45
   }
   ```
 
-- 
+## 默认参数
+
+```javascript
+function fn(param1=default1, param2=default2,..) {
+}
+```
+
+- 如果有多个默认值，只想传参最后一个，那么前面的需要传undefined
+
+  ```javascript
+  function createDiv(a = 1, b = 2, c = 3) {
+    const div = [a, b, c];
+    return div;
+  }
+  
+  console.log(createDiv(undefined,undefined,4)); // [1,2,4]
+  ```
+
+- 默认值使用参数
+
+  ```JavaScript
+  function add(x = 1, y = x, z = x + y) {
+      return x + y + z;
+  }
+  
+  console.log(add()); // 4
+  ```
+
+- arguments 指的是实际的传参
+
+  ```javascript
+  function add(x, y = 1, z = 2) {
+      console.log( arguments.length );
+      return x + y + z;
+  }
+  
+  add(10); // 1
+  add(10, 20); // 2
+  add(10, 20, 30); // 3
+  ```
+
+# Section 6. Objects & Prototypes
+
+## 
 
 # Section 9. Promises & Async/Await
 

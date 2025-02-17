@@ -1,13 +1,6 @@
-// for (var i = 1; i <= 3; i++) {
-//   (function(i) {
-//     setTimeout(function() {
-//       console.log(i); // 输出: 1, 2, 3
-//     }, 1000);
-//   })(i);
-// }
-
-for (var i = 1; i <= 3; i++) {
-  setTimeout(function() {
-    console.log(i);
-  }, 1000);
+function createDiv(a = 1, b = 2, c = 3) {
+  const div = [a, b, c];
+  return div;
 }
+
+console.log(createDiv(undefined,undefined,4));
