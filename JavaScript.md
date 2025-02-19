@@ -846,7 +846,214 @@ function fn(param1=default1, param2=default2,..) {
 
 # Section 6. Objects & Prototypes
 
-## 
+## object-methods
+
+- 在对象中定义一个方法属性
+
+```javascript
+let person = {
+    firstName: 'John',
+    lastName: 'Doe',
+    greet: function () {
+        console.log('Hello, World!');
+    }
+};
+
+// ES6引入了更加简洁的定义方式
+let person = {
+    firstName: 'John',
+    lastName: 'Doe',
+    greet() {
+        console.log('Hello, World!');
+    }
+};
+```
+
+- this
+
+  在方法内部，this值引用调用该方法的对象。因此，可以使用this值访问属性
+
+  ```JavaScript
+  let person = {
+      firstName: 'John',
+      lastName: 'Doe',
+      greet: function () {
+          console.log('Hello, World!');
+      },
+      getFullName: function () {
+          return this.firstName + ' ' + this.lastName;
+      }
+  };
+  
+  
+  console.log(person.getFullName()); // 'John Doe'
+  ```
+
+  如果一个函数是对象的属性，那么它叫做方法
+
+  函数是一段独立的代码块，可以通过函数名直接调用，函数的上下文（`this`）通常是全局对象（在浏览器中是`window`），除非使用`call`、`apply`或`bind`显式绑定。
+
+  方法是作为对象属性的函数，方法通过对象调用，通常使用`对象.方法名()`的形式，方法的上下文（`this`）通常是调用它的对象
+
+  总结：方法是对象的属性，调用时`this`指向该对象；函数独立存在，调用时`this`通常指向全局对象。
+
+## 构造函数
+
+### 构造函数的定义
+
+使用构造函数定义自定义类型，并使用new操作符从该类型创建多个对象
+
+构造函数具有以下约定：
+
+- 大写字母开头，如`Person`
+
+- 只能通过`new`关键字调用
+
+> [!NOTE]
+>
+> ES6引入了 `class` 关键字， 允许定义自定义类型。类只是构造函数之上的语法糖，有一些增强
+
+```JavaScript
+function Person(firstName, lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+}
+
+// 等同于
+
+function Person(firstName, lastName) {
+    // this = {};
+
+    // add properties to this
+    this.firstName = firstName;
+    this.lastName = lastName;
+
+    // return this;
+}
+
+let person = new Person('John','Doe');
+
+// 等同于
+
+let person = {
+    firstName: 'John',
+    lastName: 'Doe'
+};
+```
+
+### 在构造函数中添加方法
+
+```JavaScript
+function Person(firstName, lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+
+    this.getFullName = function () {
+        return this.firstName + " " + this.lastName;
+    };
+}
+
+let person = new Person("John", "Doe");
+console.log(person.getFullName()); // John Doe
+```
+
+### 构造函数的返回值
+
+- **默认行为：隐式返回`this`**
+
+  - 当使用`new`关键字调用构造函数时，构造函数会隐式创建一个新对象，并将`this`绑定到这个新对象。
+  - 如果没有显式的`return`语句，构造函数会隐式返回`this`，即新创建的对象。
+
+  ```javascript
+  function Person(name) {
+      this.name = name;
+      // 没有 return 语句，隐式返回 this
+  }
+  
+  const person = new Person("Alice");
+  console.log(person.name); // 输出 "Alice"
+  ```
+
+-  **如果`return`返回一个对象**
+
+  - 如果构造函数中有`return`语句，并且`return`的是一个对象（包括数组、函数等），那么构造函数会返回这个对象，而不是默认的`this`。
+  - 这意味着新创建的对象会被丢弃，`return`的对象会替代它。
+
+  ```JavaScript
+  function Person(name) {
+      this.name = name;
+      return { name: "Bob" }; // 返回一个对象
+  }
+  
+  const person = new Person("Alice");
+  console.log(person.name); // 输出 "Bob"，而不是 "Alice"
+  ```
+
+- **如果`return`返回一个非对象值**
+
+  - 如果`return`返回的是一个非对象值（如字符串、数字、布尔值、`null`、`undefined`等），这个返回值会被忽略，构造函数仍然会返回默认的`this`。
+
+  ```JavaScript
+  function Person(name) {
+      this.name = name;
+      return 42; // 返回一个非对象值
+  }
+  
+  const person = new Person("Alice");
+  console.log(person.name); // 输出 "Alice"，42 被忽略
+  ```
+
+### new.target 属性
+
+ES6 引入的 `new.target` 属性，主要为了避免调用构造函数时不使用`new`关键字
+
+如果未使用new关键字，构建函数的this会绑定到全局对象，这样就会导致访问不到对象的属性和方法
+
+```JavaScript
+let person = Person('John','Doe');
+console.log(person.firstName); // TypeError: Cannot read property 'firstName' of undefined
+person.getFullName(); // TypeError: Cannot read property 'getFullName' of undefined
+```
+
+如果用new关键字调用构造函数，则`new.Target`返回函数的引用。否则返回`undefined`
+
+```JavaScript
+function Person(firstName, lastName) {
+    console.log(new.target);
+
+    this.firstName = firstName;
+    this.lastName  = lastName;
+
+    this.getFullName = function () {
+        return this.firstName + " " + this.lastName;
+    };
+}
+
+let person = Person("John", "Doe"); // undefined
+let person = new Person("John", "Doe"); // [Function: Person]
+```
+
+通过在构造函数内判断`new.Target`的值可以让函数调用的写法更有灵活性
+
+```JavaScript
+// 如果调用函数没使用new关键字，那么返回一个new person对象
+function Person(firstName, lastName) {
+    if (!new.target) {
+        return new Person(firstName, lastName);
+    }
+
+    this.firstName = firstName;
+    this.lastName = lastName;
+}
+
+let person = Person("John", "Doe");
+
+console.log(person.firstName);
+```
+
+## prototype
+
+
 
 # Section 9. Promises & Async/Await
 

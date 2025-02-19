@@ -1,6 +1,14 @@
-function createDiv(a = 1, b = 2, c = 3) {
-  const div = [a, b, c];
-  return div;
-}
+function countDown(fromNumber) {
+  console.log(fromNumber);
 
-console.log(createDiv(undefined,undefined,4));
+  let nextNumber = fromNumber - 1;
+
+  if (nextNumber > 0) {
+      countDown(nextNumber);
+  }
+}
+let newYearCountDown = countDown;
+// somewhere in the code
+countDown = null;
+// the following function call will cause an error
+newYearCountDown(10);
