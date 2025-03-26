@@ -1053,11 +1053,40 @@ console.log(person.firstName);
 
 ## prototype
 
+### 介绍
+
+- JavaScript 对象通过 prototype 实现继承
+
+- 每个对象都有一个指向 prototype 的属性，prototype 本身也是对象，形成原型链，直到末端的原型值为 `null`
+
+- 访问某个属性的时候，如果所访问的对象本身不存在该属性，则会根据原型链进行搜索
+
+- 当函数作为对象的属性时称为方法
+
+### prototype 图解
+
+JavaScript 具有内置的 `Object()` 函数，它的类型是方法
+
+`Object.prototype` 指向一个匿名对象
+
+`Object.prototype`对象的 constructor 又指向了 Object 函数`Object.prototype.constructor === Object`
+
+![JavaScript Prototype](https://www.javascripttutorial.net/wp-content/uploads/2022/01/JS-prototype.svg)
+
+ `[[Prototype]]` 是对象的一个内部属性，它的作用是链接到原型链的上游对象，实现基于原型的继承机制
+
+![img](https://www.javascripttutorial.net/wp-content/uploads/2022/01/JS-prototype-calling-a-method.svg)
+
+### 获取 prototype
+
+- `p1.__proto__`
+- `Object.getPrototypeOf(p1)`
+- `p1.constructor.prototype`
 
 
-# Section 9. Promises & Async/Await
-
-## promise
 
 
 
+## 构造函数/原型模式
+
+### ja
