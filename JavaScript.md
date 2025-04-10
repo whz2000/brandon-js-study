@@ -1083,10 +1083,206 @@ JavaScript 具有内置的 `Object()` 函数，它的类型是方法
 - `Object.getPrototypeOf(p1)`
 - `p1.constructor.prototype`
 
-
-
-
-
 ## 构造函数/原型模式
 
-### ja
+### 构造函数模式和原型模式
+
+- 构造函数定义对象的属性
+- 原型模式定义对象的方法
+
+### 构造器+原型的示例
+
+```javascript
+function Person(firstName, lastName) {
+	this.firstName = firstName;
+	this.lastName = lastName;
+}
+
+Person.prototype.getFullName = function () {
+  return this.firstName + ' ' + this.lastName;
+};
+```
+
+## 原型继承
+
+```JavaScript
+// 定义一个对象
+let person = {
+    name: "John Doe",
+    greet: function () {
+        return "Hi, I'm " + this.name;
+    }
+};
+```
+
+默认情况下，JavaScript 有一个内置的 `Object` 函数以及一个匿名对象，该对象通过 `Object.prototype` 引用
+
+![JavaScript prototypal inheritance](https://www.javascripttutorial.net/wp-content/uploads/2022/01/JavaScript-prototypal-inheritance.svg)
+
+Person 对象拥有一个指向被 Object 函数引用的匿名函数的链接，由 [[Prototype]] 表示
+
+使用 `__proto__` 属性访问对象的原型，修改该属性能够修改指向的原型
+
+`Object.getPrototypeOf()` 方法返回对象的原型
+
+
+
+## this 关键字
+
+- JavaScript 中 this 引用的是当前调用该函数的对象
+
+```JavaScript
+let counter = {
+  count: 0,
+  next: function () {
+    return ++this.count;
+  },
+};
+
+counter.next();
+
+// 假设有一个对象 counter ，它具有一个方法 next() 。当调用 next() 方法时，可以访问 this 对象
+// 在 next() 函数内部， this 引用了 counter 对象
+// next() 是 counter 对象的属性，因此在 next() 函数内部， this 引用的是 counter 对象。
+```
+
+- 在全局环境下，`this` 引用的是全局对象，在浏览器中是 `window` 对象，在 Node.js 中则是 `global` 对象
+
+### 函数上下文
+
+JavaScript 中有多种不同的函数调用方式，每次函数调用都定义了自己的上下文。因此， `this` 的表现会有所不同
+
+- 简单函数调用方式
+
+  ```JavaScript
+  function show() {
+     console.log(this === window); 
+  }
+  
+  show();
+  ```
+
+  在非严格模式下，上面的 this 指向全局对象，与执行 `window.show()` 操作相同
+
+  严格模式下，则会将 `this` 设置为 `undefined`
+
+- 方法调用
+
+  ```javascript
+  let car = {
+      brand: 'Honda',
+      getBrand: function () {
+          return this.brand;
+      }
+  }
+  
+  console.log(car.getBrand()); // Honda
+  ```
+
+  调用对象的方法时，会将 `this` 设置为拥有该方法的对象
+
+  ```JavaScript
+  // 在上述案例的基础上，将对象方法赋值给一个变量
+  let brand = car.getBrand
+  // 通过变量调用方法
+  console.log(brand()); // undefined
+  // 这种调用方法就是简单的函数调用方式，this 指向的是全局对象或者 undefined，因此得到的结果就是 undefined
+  ```
+
+  要解决此问题，使用 `Function.prototype` 对象的 `bind()` 方法。 `bind()` 方法创建一个新函数，该函数的 `this` 关键字被设置为指定的值
+
+  ```javascript
+  let brand = car.getBrand.bind(car);
+  console.log(brand()); // Honda
+  
+  // 新案例，通过 bind 方法将 this 设置为其他的对象
+  let car = {
+      brand: 'Honda',
+      getBrand: function () {
+          return this.brand;
+      }
+  }
+  
+  let bike = {
+      brand: 'Harley Davidson'
+  }
+  
+  let brand = car.getBrand.bind(bike);
+  console.log(brand());
+  ```
+
+- 构造函数调用
+
+  使用 `new` 关键字创建函数对象的实例时，将该函数用作构造函数，创建一个新的对象并将 this 设置为新创建的对象
+
+  ```javascript
+  function Car(brand) {
+      this.brand = brand;
+  }
+  
+  Car.prototype.getBrand = function () {
+      return this.brand;
+  }
+  
+  let car = new Car('Honda');
+  console.log(car.getBrand()); // Honda
+  
+  // 如果是简单调用，即省略 new 关键字的情况下，this 指向全局对象，所以 bmw.brand 返回 undefined，而globalthis.brand = BWN
+  var bmw = Car('BMW');
+  console.log(bmw.brand);
+  // => TypeError: Cannot read property 'brand' of undefined
+  
+  // 为了确保 Car() 函数始终通过构造函数调用方式被调用，可以在 Car() 函数的开头使用 instanceof 进行检查
+  function Car(brand) {
+      if (!(this instanceof Car)) {
+          throw Error('Must use the new operator to call the function');
+      }
+      this.brand = brand;
+  }
+  ```
+
+  ES6 引入了一个名为 `new.target` 的元属性，用来检测一个函数是作为简单调用还是作为构造函数被调用。
+
+  ```javascript
+  function Car(brand) {
+      if (!new.target) {
+          throw Error('Must use the new operator to call the function');
+      }
+      this.brand = brand;
+  }
+  ```
+
+- 间接调用
+
+  函数是对象，是 Function 类型的实例
+
+  `Function` 类型有两个方法： `call()` 和 `apply()` 。这些方法允许您在调用函数时设置 `this` 值
+
+  ```javascript
+  function getBrand(prefix) {
+      console.log(prefix + this.brand);
+  }
+  
+  let honda = {
+      brand: 'Honda'
+  };
+  let audi = {
+      brand: 'Audi'
+  };
+  
+  getBrand.call(honda, "It's a "); // It's a Honda
+  getBrand.call(audi, "It's an "); // It's an Audi
+  ```
+
+### 箭头函数
+
+ES6 引入了一个名为箭头函数的新概念。在箭头函数中，JavaScript 会根据词法作用域设置 `this`
+
+这意味着箭头函数不会创建自己的执行上下文，而是从定义箭头函数的外部函数中继承 `this`
+
+```javascript
+let getThis = () => this;
+console.log(getThis() === window); // true
+// 在此示例中， this 的值被设置为全局对象，即在 Web 浏览器中为 window 
+```
+
