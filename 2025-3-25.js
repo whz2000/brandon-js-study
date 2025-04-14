@@ -1,3 +1,5 @@
+'use strict';
+
 function Person(name, age) {
     this.name = name;
     this.age = age;
@@ -58,8 +60,24 @@ let bike = {
 
 // console.log(bike.__proto__.constructor.getPrototypeOf(bike))
 
-function test(params) {
-    console.log(params)
+// function test(params) {
+//     console.log(params)
+// }
+
+// console.log(typeof test)
+var personActions = {
+    getFullName() {
+      return this.firstName + ' ' + this.lastName;
+    },
+  };
+  
+function createPerson(firstName, lastName) {
+    let person = Object.create(personActions)
+    person.firstName = firstName
+    person.lastName = lastName
+    return person;
 }
 
-console.log(typeof test)
+var person1 = createPerson('john', 'pang')
+
+console.log(person1)

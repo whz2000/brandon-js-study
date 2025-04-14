@@ -1286,3 +1286,230 @@ console.log(getThis() === window); // true
 // 在此示例中， this 的值被设置为全局对象，即在 Web 浏览器中为 window 
 ```
 
+
+
+## globalThis
+
+在不同的运行环境下的全局对象不一样，比如浏览器环境下为 `window`、Node.js 是 `global`，ES2020 引入 `globalThis` 来实现跨环境访问全局对象
+
+
+
+## 对象属性
+
+- 对象有两种类型的属性：数据属性和访问器属性
+
+### 数据属性
+
+JavaScript 通过用两对方括号括起来的内部属性来指定对象属性的特征，例如 `[[Enumerable]]`
+
+数据属性具有 4 个属性
+
+- `[[Configurarable]]` \- 决定某个属性是否可以重新定义或通过 `delete` 操作符移除
+- `[[Enumerable]]` - 表示某个属性是否可以在 `for...in` 循环中返回
+- `[[Writable]]` - 指定属性的值可以被更改
+- `[[Value]]` - 包含属性的实际值
+
+默认情况下，前 3 个属性都为 true，`[[Value]]` 属性为 undefined
+
+使用 `Object.defineProperty()` 方法来定义或修改属性
+
+```javascript
+'use strict';
+
+let person = {};
+
+Object.defineProperty(person, 'ssn', {
+    configurable: false,
+    value: '012-38-9119'
+});
+
+delete person.ssn;
+```
+
+在定义时如果未指定属性值，那么默认为 false
+
+```javascript
+let person = {}
+
+Object.defineProperty(person, 'ssn', {
+    value: 123
+})
+
+console.log(Object.getOwnPropertyDescriptor(person, 'ssn'))
+// { value: 123, writable: false, enumerable: false, configurable: false }
+```
+
+当一个属性是 false 的时候，就无法再更改为 true
+
+```javascript
+'use strict';
+
+let person = {
+    name: 'b'
+}
+
+Object.defineProperty(person, 'ssn', {
+    writable: true,
+    value: 123
+})
+
+person.ssn = 456
+
+console.log(person.ssn)
+
+Object.defineProperty(person, 'ssn', {
+    writable: false
+})
+
+person.ssn = 789 // Cannot assign to read only property 'ssn' of object '#<Object>'
+
+console.log(person.ssn)
+```
+
+### 访问器属性
+
+访问器具有4个属性：
+
+- `[[Configurable]]`
+- `[[Enumerable]]`
+- `[[Get]]`：当从访问器属性读取数据时， `[[Get]]` 函数会自动被调用以返回一个值。 `[[Get]]` 函数的默认返回值为 `undefined`
+- `[[Set]]`：如果您为访问器属性赋值， `[[Set]]` 函数将自动被调用
+
+要定义一个访问器属性，您必须使用 `Object.defineProperty()` 方法
+
+```JavaScript
+let person = {
+    firstName: 'John',
+    lastName: 'Doe'
+}
+
+Object.defineProperty(person, 'fullName', {
+    get: function () {
+        return this.firstName + ' ' + this.lastName;
+    },
+    set: function (value) {
+        let parts = value.split(' ');
+        if (parts.length == 2) {
+            this.firstName = parts[0];
+            this.lastName = parts[1];
+        } else {
+            throw 'Invalid name format';
+        }
+    }
+});
+
+console.log(person.fullName); //'John Doe'
+```
+
+### 定义多个属性
+
+在 ES5 中，可以使用 `Object.defineProperties()` 方法在单个语句中定义多个属性
+
+```javascript
+var product = {};
+
+Object.defineProperties(product, {
+    name: {
+        value: 'Smartphone'
+    },
+    price: {
+        value: 799
+    },
+    tax: {
+        value: 0.1
+    },
+    netPrice: {
+        get: function () {
+            return this.price * (1 + this.tax);
+        }
+    }
+});
+
+console.log('The net price of a ' + product.name + ' is ' + product.netPrice.toFixed(2) + ' USD');
+```
+
+### 获取对象的描述属性
+
+`Object.getOwnPropertyDescriptor()`
+
+```javascript
+let person = {
+    firstName: 'John',
+    lastName: 'Doe'
+};
+
+
+let descriptor = Object.getOwnPropertyDescriptor(person, 'firstName');
+
+console.log(descriptor); // { value: 'John', writable: true, enumerable: true, configurable: true }
+```
+
+
+
+## for...in 循环
+
+使用 for...in 循环来遍历对象的可枚举属性
+
+属性可枚举前提：属性的内部 `enumerable` 标志被设置为 `true` 
+
+语法及例子：
+
+```javascript
+for(const propertyName in object) {
+    // ...
+}
+
+var person = {
+    firstName: 'John',
+    lastName: 'Doe',
+    ssn: '299-24-2351'
+};
+
+for(var prop in person) {
+    console.log(prop + ':' + person[prop]);
+}
+
+/*
+firstName:John
+lastName:Doe
+ssn:299-24-2351
+*/
+```
+
+`for...in` 语句会沿着原型链向上查找并枚举继承的属性
+
+如果只想枚举对象自身的属性，可以使用 `hasOwnProperty()` 方法
+
+## 对象的可枚举属性
+
+ES6 提供了一个方法 `propertyIsEnumerable()` ，用于确定某个属性是否可枚举。如果属性可枚举，则返回 `true` ；否则返回 `false` 
+
+使用方法：`person.propertyIsEnumerable('firstName')`
+
+## 对象的自有属性
+
+直接定义在对象上的属性是自有属性，而对象从其原型继承的属性则是继承属性
+
+`hasOwnProperty()` 用于确定某个属性是否为自身的属性 
+
+使用方法：`employee.hasOwnProperty('job')`
+
+## 工厂函数
+
+当一个函数创建并返回一个新对象时，它被称为工厂函数
+
+```JavaScript
+function createPerson(firstName, lastName) {
+  return {
+    firstName: firstName,
+    lastName: lastName,
+    getFullName() {
+      return firstName + ' ' + lastName;
+    },
+  };
+}
+
+let person1 = createPerson('John', 'Doe');
+let person2 = createPerson('Jane', 'Doe');
+```
+
