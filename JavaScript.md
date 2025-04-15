@@ -1513,3 +1513,272 @@ let person1 = createPerson('John', 'Doe');
 let person2 = createPerson('Jane', 'Doe');
 ```
 
+## 对象解构
+
+```JavaScript
+// 语法
+let { property1: variable1, property2: variable2 } = object;
+// : 前面是对象的属性，无论是定义对象属性还是对象解构，属性名始终位于左侧
+
+let person = {
+    firstName: 'John',
+    lastName: 'Doe'
+};
+
+let { firstName: fname, lastName: lname } = person;
+
+// firstName 和 lastName 属性分别被赋值给 fName 和 lName 变量
+
+// 如果变量和对象属性同名
+let { firstName, lastName } = person;
+
+// 变量声明和赋值分开的时候，必须用()包起来
+({firstName, lastName} = person);
+
+// 解构不存在的属性给变量时，变量会被设置为 undefined
+let { firstName, lastName, middleName } = person;
+console.log(middleName); // undefined
+
+// 设置默认值
+let person = {
+    firstName: 'John',
+    lastName: 'Doe',
+    currentAge: 28
+};
+
+let { firstName, lastName, middleName = '', currentAge: age = 18 } = person;
+
+console.log(middleName); // ''
+console.log(age); // 28
+
+// 解构一个空对象
+let {firstName, lastName} = null // 报错TypeError: Cannot destructure property 'firstName' of 'null' as it is null.
+// 避免这种情况使用 || 回退为空对象
+let { firstName, lastName } = getPerson() || {};
+
+// 嵌套对象解构 & 将一个属性赋值给多个变量
+let employee = {
+    id: 1001,
+    name: {
+        firstName: 'John',
+        lastName: 'Doe'
+    }
+};
+let {
+    name: {
+        firstName,
+        lastName
+    },
+    name
+} = employee;
+
+console.log(firstName); // John
+console.log(lastName); // Doe
+console.log(name); // { firstName: 'John', lastName: 'Doe' }
+
+// 解构函数参数
+let display = ({firstName, lastName}) => console.log(`${firstName} ${lastName}`);
+
+let person = {
+    firstName: 'John',
+    lastName: 'Doe'
+};
+
+display(person);
+```
+
+## 可选链式操作符
+
+访问对象中的嵌套属性时，无需额外在每一步进行判空，可以直接使用 `?.` ，如果链中的任何部分为空，可选链操作符（ `?.` ）就会立即停止，并返回 `undefined` 作为结果
+
+```javascript
+objectName ?. propertyName
+objectName ?. [expression]
+```
+
+函数调用
+
+```javascript
+functionName ?. (args)
+```
+
+## ES6 中的对象属性定义语法扩展
+
+### 简洁的属性初始化写法
+
+```JavaScript
+// 定义属性的时候如果只有一个名称，会从周围作用域寻找同名变量来赋值
+// 案例 1
+function createMachine(name, status) {
+    return {
+        name,
+        status
+    };
+}
+// 案例 2
+let name = 'Computer',
+    status = 'On';
+
+let machine = {
+   name,
+   status
+};
+```
+
+### 计算属性名
+
+使用表达式动态定义属性名
+
+将一个表达式放在方括号 `[]` 中，JavaScript 会先计算这个表达式的值，然后将计算结果作为属性名
+
+```JavaScript
+// 使用变量作为属性名
+let name = 'machine name';
+let machine = {
+    [name]: 'server',
+    'machine hours': 10000
+};
+
+console.log(machine[name]); // server
+
+// 表达式
+let prefix = 'machine';
+let machine = {
+    [prefix + ' name']: 'server',
+    [prefix + ' hours']: 10000
+};
+
+console.log(machine['machine name']); // server
+```
+
+### 简洁的方法定义写法
+
+```JavaScript
+// 完整的写法
+let server = {
+	name: "Server",
+	restart: function () {
+		console.log("The" + this.name + " is restarting...");
+	}
+};
+
+// ES6 后可以省略:和 function 关键字
+let server = {
+    name: 'Server',
+    restart() {
+        console.log("The" + this.name + " is restarting...");
+    }
+};
+
+// 属性名有空格，使用引号
+let server = {
+    name: 'Server',
+    restart() {
+        console.log("The " + this.name + " is restarting...");
+    },
+    'starting up'() {
+        console.log("The " +  this.name + " is starting up!");
+    }
+};
+// 调用时使用[]
+server['starting up']();
+```
+
+# Section 7. Classes
+
+## Class
+
+ES6 之前通过构造函数+原型的模式来模拟类
+
+ES6 引入新的语法来声明类
+
+```javascript
+class Person {
+    constructor(name) {
+        this.name = name;
+    }
+    getName() {
+        return this.name;
+    }
+}
+```
+
+类与自定义类型（构建函数+原型模式）的区别
+
+- 类声明不像函数声明那样会被提升
+- 类中的所有代码都会自动在严格模式下执行，并且无法更改此行为
+- 类方法是非枚举的。如果使用构造函数/原型模式，则必须使用 `Object.defineProperty()` 方法将属性设置为不可枚举
+- 不使用 `new` 运算符调用类的构造函数将会导致错误
+
+## Getters and Setters
+
+获取器和设置器
+
+ `get` 关键字将对象属性绑定到一个方法，当查找该属性时将调用此方法
+
+ `set` 关键字将对象属性绑定到一个方法，当对该属性进行赋值时将调用该方法
+
+```javascript
+class Person {
+    constructor(name) {
+        this._name = name;
+    }
+    get name() {
+        return this._name;
+    }
+    set name(newName) {
+        newName = newName.trim();
+        if (newName === '') {
+            throw 'The name cannot be empty';
+        }
+        this._name = newName;
+    }
+}
+```
+
+## 类表达式
+
+定义一个匿名类，然后赋值给一个变量，通过这个变量可以创建类的实例
+
+```JavaScript
+let Person = class {
+    constructor(name) {
+        this.name = name;
+    }
+    getName() {
+        return this.name;
+    }
+}
+```
+
+可以将类作为参数传递给函数、从函数中返回类、将类赋值给变量
+
+```JavaScript
+function factory(aClass) {
+    return new aClass();
+}
+
+let greeting = factory(class {
+    sayHi() { 
+      console.log('Hi'); 
+    }
+});
+
+greeting.sayHi(); // 'Hi'
+```
+
+单例模式：一个类只能被初始化一次，即立即调用创建对象
+
+```JavaScript
+new class {
+    constructor(name) {
+        this.name = name;
+    }
+    start() {
+        console.log(`Starting the ${this.name}...`);
+    }
+}('Awesome App')
+```
+
+## 计算属性
+

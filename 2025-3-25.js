@@ -65,19 +65,48 @@ let bike = {
 // }
 
 // console.log(typeof test)
-var personActions = {
-    getFullName() {
-      return this.firstName + ' ' + this.lastName;
-    },
-  };
+// var personActions = {
+//     getFullName() {
+//       return this.firstName + ' ' + this.lastName;
+//     },
+//   };
   
-function createPerson(firstName, lastName) {
-    let person = Object.create(personActions)
-    person.firstName = firstName
-    person.lastName = lastName
-    return person;
+// function createPerson(firstName, lastName) {
+//     let person = Object.create(personActions)
+//     person.firstName = firstName
+//     person.lastName = lastName
+//     return person;
+// }
+
+// var person1 = createPerson('john', 'pang')
+
+// console.log(person1)
+
+// let display = ({firstName: fname, lastName: lname}) => console.log(`${fname} ${lname}`);
+
+// let person = {
+//     firstName: 'John',
+//     lastName: 'Doe'
+// };
+
+// display(person);
+
+class Person2 {
+    constructor(name) {
+        this._name = name;
+    }
+    get name() {
+        return this._name;
+    }
+    set name(newName) {
+        newName = newName.trim();
+        if (newName === '') {
+            throw 'The name cannot be empty';
+        }
+        this._name = newName;
+    }
 }
 
-var person1 = createPerson('john', 'pang')
+var person1 = new Person2('test')
 
-console.log(person1)
+console.log(person1._name)
